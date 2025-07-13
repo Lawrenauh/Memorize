@@ -8,39 +8,44 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var counter = 5
+    @State var Counter = 5
     var EmojiList = ["👻", "🦋", "🙈", "🤡", "👻", "🦋", "🙈", "🤡", "🤖", "😺", "🎃"]
     
     var body: some View {
         VStack {
-            VStack {
-                ForEach(0..<counter, id: \.self ) { i in
-                    CardView(content: EmojiList[i])
-                }
-            }
-            .foregroundColor(.orange)
-            .padding()
-            
-            HStack {
-                CardRemover()
-                    .onTapGesture {
-                        if counter > 1 {
-                            counter -= 1
-                        }
-                }
-                Spacer()
-                CardAdder()
-                    .onTapGesture {
-                        if counter < EmojiList.count {
-                        counter += 1
-                    }
-                }
-            }
-            .padding()
-            .foregroundColor(.orange)
-            .imageScale(.large)
-            .font(.title2)
+            cards
+            cardsCountAjuster
         }
+         .foregroundColor(.orange)
+         .padding()
+   }
+    
+    var cards: some View {
+        VStack {
+            ForEach(0..<Counter, id: \.self ) { i in
+                CardView(content: EmojiList[i])
+            }
+        }
+    }
+    
+    var cardsCountAjuster: some View {
+        HStack {
+            cardsCountAjuster(by: -1, symbol: "rectangle.stack.badge.minus.fill")
+            Spacer()
+            cardsCountAjuster(by: 1, symbol: "rectangle.stack.badge.plus.fill")
+        }
+    }
+    
+    func cardsCountAjuster(by offset: Int, symbol: String) -> some View {
+        Button {
+            Counter += offset
+        } label: {
+            Image(systemName: symbol)
+        }
+        .disabled(Counter + offset < 1 || Counter + offset > EmojiList.count)
+        .padding()
+        .imageScale(.large)
+        .font(.title3)
     }
 }
 
@@ -69,21 +74,6 @@ struct CardView: View {
         }
     }
 }
-
-struct CardAdder: View {
-    
-    var body: some View {
-            Image(systemName: "rectangle.stack.badge.plus.fill")
-        }
-
-}
-
-struct CardRemover: View {
-    var body: some View {
-            Image(systemName: "rectangle.stack.badge.minus.fill")
-        }
-}
-
 
 #Preview {
     ContentView()
